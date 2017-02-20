@@ -1,13 +1,15 @@
 """Saves data obtained from reddit to file"""
+
 import sys
 import os
 import datetime
 
-def write_subreddit_text(posts):
+def write_subreddit_text(posts, filename):
     """iterates through all posts and comments and writes them to specified file"""
     try:
         path = os.getcwd() + '/data/'
-        filename = input("Enter name of data file: ")
+        if filename == '' or filename == None:
+            filename = input("Enter name of data file: ")
         filename = os.path.join(path, filename + '.data')
         if verify_write(filename):
             __write_data(filename, posts)
@@ -18,6 +20,7 @@ def write_subreddit_text(posts):
 
 def verify_write(filename):
     """Return true if user wants to overwrite existing file"""
+    
     if os.path.exists(filename):
         ans = input('File already exists. Overwrite? (y/n): ')
         return ans == 'y' or ans == 'Y'
@@ -35,7 +38,6 @@ def __write_data(filename, posts):
     target.flush()
     sys.stdout.flush()
 
-
     #TODO: catch HTTP errors and using settings file
     for post in posts:
         title = str(post.title.encode('ascii', 'ignore'))
@@ -44,7 +46,7 @@ def __write_data(filename, posts):
         for comment in post.comments.list():
             comment = str(comment.body.encode('ascii', 'ignore'))
             data += comment
-            print('.', end='')
+            print('.', end = '')
             sys.stdout.flush()
         target.flush()
 
