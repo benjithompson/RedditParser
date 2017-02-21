@@ -4,16 +4,12 @@ import os
 import sys
 import datetime
 import praw.exceptions as pex
-from utils import path
 from time import sleep
 from urllib3 import exceptions as ex
 
 def save(posts, filename):
     """iterates through all posts and comments and writes them to specified file"""
     try:
-        if filename == '':
-            filename = input("Enter name of data file: ")
-        filename = path.get_path(filename, '/data/', '.data')
         if __verify_write(filename):
             __write_data(filename, posts)
         else:
