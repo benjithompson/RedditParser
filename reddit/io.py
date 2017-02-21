@@ -69,5 +69,8 @@ def __get_data(posts):
         except KeyboardInterrupt:
             print('KeyboardInterrupt...')
             break
+        except:
+            sleep(5)
+        
 
     return data
