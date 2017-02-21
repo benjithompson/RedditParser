@@ -7,6 +7,9 @@ import praw.exceptions as pex
 from time import sleep
 from urllib3 import exceptions as ex
 
+RETRY = 100
+WAIT = 3
+
 def save(posts, filename):
     """iterates through all posts and comments and writes them to specified file"""
     try:
@@ -56,21 +59,26 @@ def __get_data(posts):
             time = str(datetime.datetime.now())
             data = ''.join(time)
             break
-        except ex.HTTPError as err:
-            print('HTTPError...')
-            print(err.code)
-            sleep(5)
-        except pex.ClientException:
-            print('ClientException...')
-            sleep(5)
-        except pex.APIException:
-            print('APIException...')
-            sleep(5)
-        except KeyboardInterrupt:
-            print('KeyboardInterrupt...')
-            break
+        # except ex.HTTPError as err:
+        #     print('HTTPError...')
+        #     print(err.code)
+        #     sleep(WAIT)
+        # except pex.ClientException:
+        #     print('ClientException...')
+        #     sleep(WAIT)
+        # except pex.APIException:
+        #     print('APIException...')
+        #     sleep(WAIT)
+        # except KeyboardInterrupt:
+        #     print('KeyboardInterrupt...')
+        #     break
         except:
-            sleep(5)
+            print('Exception...')
+            sleep(WAIT)
+            RETRY = RETRY + 1
+            if retry == 100:
+                break
+            
         
 
     return data
