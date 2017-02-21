@@ -2,10 +2,10 @@
 
 import os
 import sys
-import config
 import datetime
 import praw.exceptions as pex
 from time import sleep
+from reddit import config
 from urllib3 import exceptions as ex
 
 RETRY = config.retry
@@ -85,5 +85,5 @@ def __get_data(posts):
             if retry == 100:
                 break
             retry = retry + 1
-            
+
     return data
