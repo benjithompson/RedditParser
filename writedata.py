@@ -7,7 +7,7 @@ import praw.exceptions as pex
 from time import sleep
 from urllib3 import exceptions as ex
 
-def write_subreddit_text(posts, filename):
+def save(posts, filename):
     """iterates through all posts and comments and writes them to specified file"""
     try:
         path = os.getcwd() + '/data/'
@@ -21,7 +21,7 @@ def write_subreddit_text(posts, filename):
     except OSError as err:
         print(err.strerror)
 
-def verify_write(filename):
+def __verify_write(filename):
     """Return true if user wants to overwrite existing file"""
     
     if os.path.exists(filename):
