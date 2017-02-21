@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import operator
-
 def getdict(filename):
     wordcount = {}
     with open(filename, 'r') as f:
