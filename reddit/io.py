@@ -2,16 +2,18 @@
 
 import os
 import sys
+import config
 import datetime
 import praw.exceptions as pex
 from time import sleep
 from urllib3 import exceptions as ex
 
-RETRY = 100
-WAIT = 3
+RETRY = config.retry
+WAIT = config.wait
 
 def save(posts, filename):
     """iterates through all posts and comments and writes them to specified file"""
+
     try:
         if __verify_write(filename):
             __write_data(filename, posts)
@@ -31,6 +33,8 @@ def __verify_write(filename):
         return ans == 'y' or ans == 'Y'
 
 def __write_data(filename, posts):
+    """Pulls data from posts and writes to filename"""
+
     time = str(datetime.datetime.now())
     print('saving to ' + filename + '...')
     print('Time started: ' + time)
@@ -44,7 +48,10 @@ def __write_data(filename, posts):
         print('Complete!')
 
 def __get_data(posts):
+    """makes the request to reddit API to build the data str"""
+
     data = ''
+    retry = 0
     while True:
         try:
             for post in posts:
@@ -59,26 +66,24 @@ def __get_data(posts):
             time = str(datetime.datetime.now())
             data = ''.join(time)
             break
-        # except ex.HTTPError as err:
-        #     print('HTTPError...')
-        #     print(err.code)
-        #     sleep(WAIT)
-        # except pex.ClientException:
-        #     print('ClientException...')
-        #     sleep(WAIT)
-        # except pex.APIException:
-        #     print('APIException...')
-        #     sleep(WAIT)
-        # except KeyboardInterrupt:
-        #     print('KeyboardInterrupt...')
-        #     break
+        except ex.HTTPError as err:
+            print('HTTPError...')
+            print(err.code)
+            sleep(WAIT)
+        except pex.ClientException:
+            print('ClientException...')
+            sleep(WAIT)
+        except pex.APIException:
+            print('APIException...')
+            sleep(WAIT)
+        except KeyboardInterrupt:
+            print('KeyboardInterrupt...')
+            break
         except:
             print('Exception...')
             sleep(WAIT)
-            RETRY = RETRY + 1
             if retry == 100:
                 break
+            retry = retry + 1
             
-        
-
     return data
