@@ -15,7 +15,6 @@ def get_reddit():
     print('Logged in as: ' + str(reddit.user.me()))
     return reddit
 
-
 def get_posts(reddit, sub):
     """returns list of object submissions"""
     #flat_comments = praw.helpers.flatten_tree(submission.comments)
