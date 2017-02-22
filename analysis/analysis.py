@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 
-def getdict(filename):
+def getdict(data):
     wordcount = {}
-    with open(filename, 'r') as f:
-        data = f.read()
-        words = data.split()
-        for word in words:
-            if word in wordcount:
-                wordcount[word] += 1
-            else:
-                wordcount[word] = 1
+    words = data.split()
+    for word in words:
+        if word in wordcount:
+            wordcount[word] += 1
+        else:
+            wordcount[word] = 1
     return wordcount
 
 def getsortedkv(dict):

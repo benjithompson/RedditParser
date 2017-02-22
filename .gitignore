@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+# Reddit Data
+*.txt
+*.data
+*.out
+
 # Distribution / packaging
 .Python
 env/

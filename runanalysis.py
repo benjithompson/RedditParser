@@ -10,8 +10,7 @@ def main():
     wordcount = analysis.getdict(filepath)
     list = analysis.getsortedkv(wordcount)
     output = path.get_path(output, '/data/', '.txt')
-    with open(output, 'w') as f:
-        p.pprint(list, f)
+    
 
 if __name__ == '__main__':
     main()
