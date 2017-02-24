@@ -3,13 +3,12 @@
 from urllib3 import exceptions as ex
 import praw.exceptions as pex
 from reddit import config
+from utils import convert as c
 from time import sleep
 import praw
 import sys
 
 WAIT = 5
-START = None
-END = None
 
 def get_reddit():
     """Returns Reddit instance after authentication succeeds."""
@@ -37,12 +36,12 @@ def get_reddit():
     print('Logged in as: ' + str(reddit.user.me()))
     return reddit
 
-def get_posts(reddit, sub):
-    """returns list of object submissions"""
-    
-    return reddit.subreddit(sub).submissions(START, END)
+def get_posts(reddit, sub, start=None, end=None):
+    """returns submissions of given subreddit between start and end times"""
 
-def get_data(posts):
+    return reddit.subreddit(sub).submissions(start, end)
+
+def get_comments(posts):
     """makes the request to reddit API to build the data str"""
 
     data = ''
@@ -50,8 +49,11 @@ def get_data(posts):
     while True:
         try:
             for post in posts:
+
+                #get post data [title, date, ...]
                 title = str(post.title.encode('ascii', 'ignore'))
-                data += title
+                print(title)
+                print(c.readable_time(get_submission_time(post)))
                 #post.comments.replace_more(limit=0)
                 for comment in post.comments.list():
                     comment = str(comment.body.encode('ascii', 'ignore'))
@@ -78,3 +80,6 @@ def get_data(posts):
             sleep(WAIT)
 
     return data
+
+def get_submission_time(submission):
+    return submission.created_utc

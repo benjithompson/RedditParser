@@ -2,7 +2,13 @@
 #!/usr/bin/env python
 import os
 import re
-import time, datetime
+import pytz
+import time
+import calendar
+from pytz import timezone
+import datetime as dt
+
+
 
 def get_path(filename, folder = '', ext = ''):
     path = os.getcwd() + folder
@@ -14,6 +20,33 @@ def clean_data(data):
     cleandata = re.sub('[^a-zA-Z]', ' ', data).lower()
     return ' '.join(re.sub(r'\b\w{1,2}\b', '', cleandata).split()) 
 
-def get_time(date):
-    """Converts d/m/y into unix time"""
-    return time.mktime(datetime.datetime.strptime(s, "%d/%m/%Y").timetuple())
+def unix_time(dtime):
+    """Converts yyyy-mm-dd hh.mm.ss into unix time"""
+    return time.mktime(dtime.timetuple())
+
+def readable_time(utime):
+    """returns readable datetime object from unix timestamp"""
+    return dt.datetime.fromtimestamp(int(utime))
+
+def time_delta(dtime, hours):
+    """add hours to datetime object"""
+    return dtime - dt.timedelta(hours=hours)
+
+def get_PST():
+    """returns datetime object in pacific timezone"""
+    tz = pytz.timezone('US/Pacific')
+    return dt.datetime.now(tz)
+
+def get_UTC():
+    return dt.datetime.utcnow()
+
+def utc_pst(utime):
+    return utime - (8*60*60)
+
+def pst_utc(utime):
+    return utime + (8*60*60)
+
+def get_dt(str):
+    return dt.strftime(str, '%Y-%m-%d %H:%M:%S')
+   
+
