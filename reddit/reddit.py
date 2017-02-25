@@ -1,27 +1,31 @@
 """Reddit authenticator and retrever of comments in specified subreddit"""
 
-from urllib3 import exceptions as ex
+import sys
+from time import sleep
+
+import praw
 import praw.exceptions as pex
+from urllib3 import exceptions as ex
+
 from reddit import config
 from utils import convert as c
-from time import sleep
-import praw
-import sys
 
 WAIT = 5
+RETRY = 5
 
 def get_reddit():
     """Returns Reddit instance after authentication succeeds."""
+
     retry = 0
     print('Authenticating reddit instance...')
     while True:
-        try:   
+        try:
             reddit = praw.Reddit(client_id=config.client_id,
                                  client_secret=config.client_secret,
                                  password=config.password,
                                  user_agent=config.user_agent,
                                  username=config.username)
-            break           
+            break
         except KeyboardInterrupt:
             print('KeyboardInterrupt...')
             exit(1)
@@ -41,11 +45,11 @@ def get_posts(reddit, sub, start=None, end=None):
 
     return reddit.subreddit(sub).submissions(start, end)
 
-def get_comments(posts, scnt=None, ccnt=None):
-    """makes the request to reddit API to build the data str"""
+def get_comments(posts, submission_cnt=None, comment_cnt=None):
+    """makes the request to reddit API to build the data list"""
 
-    data = ''
-    retry = 0
+    data = []
+
     while True:
         try:
             for post in posts:
@@ -57,14 +61,14 @@ def get_comments(posts, scnt=None, ccnt=None):
                 #post.comments.replace_more(limit=0)
                 for comment in post.comments.list():
                     comment = str(comment.body.encode('ascii', 'ignore'))
-                    data += comment
-                    print('.', end = '')
+                    data.append(comment)
+                    print('.', end='')
                     sys.stdout.flush()
             break
 
         except ex.HTTPError as err:
             print('HTTPError...')
-            print(err.code)
+            print(err)
             sleep(WAIT)
         except pex.ClientException:
             print('ClientException...')
@@ -76,7 +80,7 @@ def get_comments(posts, scnt=None, ccnt=None):
             print('\nDownload cancelled.')
             break
         except:
-            print('Exception.')
+            print('Exception:' + sys.exc_info()[0])
             sleep(WAIT)
 
     return data

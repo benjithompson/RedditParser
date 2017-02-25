@@ -1,24 +1,32 @@
 # -*- coding: utf-8 -*-
 
+"""Module with conversion functions to support the main program"""
+
+import datetime as dt
 import os
 import re
-import pytz
 import time
-import calendar
-from pytz import timezone
-import datetime as dt
+
+import pytz
 
 
-
-def get_path(filename, folder = '', ext = ''):
+def get_path(filename, folder='', ext=''):
+    """Utility function to create file paths"""
     path = os.getcwd() + folder
     filename = os.path.join(path, filename + ext)
     return filename
 
-def clean_data(data):
+def list_to_str(wlist):
+    """Concatenates list entries into single string"""
+    data = ''
+    for entry in wlist:
+        data += str(entry)
+    return data
+
+def clean_text(text):
     """Removes symboles, numbers and extra spaces, toLower()"""
-    cleandata = re.sub('[^a-zA-Z]', ' ', data).lower()
-    return ' '.join(re.sub(r'\b\w{1,2}\b', '', cleandata).split()) 
+    cleantext = re.sub('[^a-zA-Z]', ' ', text).lower()
+    return ' '.join(re.sub(r'\b\w{1,2}\b', '', cleantext).split())
 
 def unix_time(dtime):
     """Converts yyyy-mm-dd hh.mm.ss into unix time"""
@@ -32,21 +40,23 @@ def time_delta(dtime, hours):
     """add hours to datetime object"""
     return dtime - dt.timedelta(hours=hours)
 
-def get_PST():
+def get_pst():
     """returns datetime object in pacific timezone"""
-    tz = pytz.timezone('US/Pacific')
-    return dt.datetime.now(tz)
+    tzone = pytz.timezone('US/Pacific')
+    return dt.datetime.now(tzone)
 
-def get_UTC():
+def get_utc():
+    """returns current time in UTC"""
     return dt.datetime.utcnow()
 
 def utc_pst(utime):
+    """converts unix timestamp from utc to pst"""
     return utime - (8*60*60)
 
 def pst_utc(utime):
+    """converts unix timestamp from pst to utc"""
     return utime + (8*60*60)
 
-def get_dt(str):
-    return dt.strftime(str, '%Y-%m-%d %H:%M:%S')
-   
-
+def get_dt(stime):
+    """returns datetime object from string with format yyyy-mm-dd hh:mm:ss"""
+    return dt.datetime.strftime(stime, '%Y-%m-%d %H:%M:%S')
