@@ -41,7 +41,7 @@ def get_posts(reddit, sub, start=None, end=None):
 
     return reddit.subreddit(sub).submissions(start, end)
 
-def get_comments(posts):
+def get_comments(posts, scnt=None, ccnt=None):
     """makes the request to reddit API to build the data str"""
 
     data = ''
