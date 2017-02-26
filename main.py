@@ -2,13 +2,12 @@
 
 """Main runner for downloading wordcounts"""
 
-import pprint as p
-import time
+from pprint import pprint
 
 from analysis import analysis as ana
 from reddit import reddit
 from utils import convert as c
-from utils import args, io
+from utils import io
 
 
 def main():
@@ -17,22 +16,21 @@ def main():
     REDDIT = reddit.get_reddit()
     #arg = args.args()
     SUB, START, END = get_input()
-    POSTS = reddit.get_posts(REDDIT, SUB, END, START)
+    rd = ana.RedditData(REDDIT)
     print('Downloading ' + SUB + ':')
-
-    comm_list = reddit.get_comments(POSTS)
-    word_str = c.list_to_str(comm_list)
-    cleandata = c.clean_text(word_str)
-    wordcount = ana.getdict(cleandata)
-    words_kv = ana.getsortedkv(wordcount)
+    rd.start_query(SUB, START, END)
+    rd.run_analysis()
+    rd.printall()
 
     ans = input('Do you want to save file? (y/n):')
     if ans is 'y':
         filename = input('save to file: ')
-        filepath = c.get_path(filename, '/data/', '.txt')
-        io.save_data_to_file(words_kv, filepath)
+        cntpath = c.get_path(filename, '/data/', '.cnt')
+        rawpath = c.get_path(filename, '/data/', '.raw')
+        io.save_data_to_file(rd.wordskv, cntpath)
+        io.save_data_to_file(rd.rawtextstr, rawpath)
     else:
-        p.pprint(words_kv)
+        pprint('exitting...')
 
 def get_input():
     """Grabs subreddit and timerange from user"""
