@@ -83,21 +83,23 @@ class RedditData:
         self.stdreadability = ts.textstat.text_standard(self.analysis_text)
 
     def printall(self):
-        pprint('SUB: ' + self.sub +
-               ', START: ' + str(c.readable_time(self.starttime)) +
-               ', END: ' + str(c.readable_time(self.endtime)))
-        pprint('FleschEASE:            ' + str(self.fleschease))
-        pprint('FleschGRADE:           ' + str(self.fleschgrade))
-        pprint('DaleChallReadability:  ' + str(self.dalechall))
-        pprint('AvgReadabilityIdx:     ' + str(self.ari))
-        pprint('ColemanLiauIdx:        ' + str(self.colemanliau))
-        pprint('LisearFormula:         ' + str(self.lisear))
-        pprint('Smog:                  ' + str(self.smog))
-        pprint('DifficultWords:        ' + str(self.difcwords))
-        pprint('Sentences:             ' + str(self.sentences))
-        pprint('lexiconCount:          ' + str(self.lexiconcnt))
-        pprint('AvgSyllablesPerWord:   ' + str(self.avgsyllables))
-        pprint('ReadabilityConcensus:  ' + str(self.stdreadability))
+        """Prints class attributes"""
+        print('\nSUB: ' + self.sub +
+              '\nSTART: ' + str(c.readable_time(self.starttime)) +
+              ', END: ' + str(c.readable_time(self.endtime)))
+
+        pprint('Flesch Reading EASE:    ' + str(self.fleschease))
+        pprint('Flesch GRADE:           ' + str(self.fleschgrade))
+        pprint('Dale Chall Readability: ' + str(self.dalechall))
+        pprint('Avg Readability Idx:    ' + str(self.ari))
+        pprint('Coleman Liau Idx:       ' + str(self.colemanliau))
+        pprint('Lisear Formula:         ' + str(self.lisear))
+        pprint('Smog Idx:               ' + str(self.smog))
+        pprint('Difficult Words:        ' + str(self.difcwords))
+        pprint('Sentences:              ' + str(self.sentences))
+        pprint('Lexicon Count:          ' + str(self.lexiconcnt))
+        pprint('Avg Syllables Per Word: ' + str(self.avgsyllables))
+        pprint('ReadabilityConcensus:   ' + str(self.stdreadability))
 
     def __getdict(self, text):
         wordcount = {}
