@@ -1,4 +1,4 @@
-
+#  -*- coding: utf-8 -*-
 """Saves data obtained from reddit to file"""
 
 import os
