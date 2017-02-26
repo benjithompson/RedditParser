@@ -4,7 +4,7 @@
 
 from pprint import pprint
 
-from analysis import analysis as ana
+from analysis import data
 from reddit import reddit
 from utils import convert as c
 from utils import io
@@ -16,7 +16,7 @@ def main():
     REDDIT = reddit.get_reddit()
     #arg = args.args()
     SUB, START, END = get_input()
-    rd = ana.RedditData(REDDIT)
+    rd = data.RedditData(REDDIT)
     print('Downloading ' + SUB + ':')
     rd.start_query(SUB, START, END)
     rd.run_analysis()
@@ -41,7 +41,13 @@ def get_input():
         print('Setting start as current time.')
         start = c.get_utc()
 
-    end = c.time_delta(start, int(input('timedelta (hours): ')))
+    ans = input('timedelta (hours): ')
+    if ans is '':
+        print('Default timedelta to 1hr.')
+        end = c.time_delta(start, 1)
+    else:
+        end = c.time_delta(start, int(ans))
+
     ustart = c.utc_pst(c.unix_time(start))
     uend = c.utc_pst(c.unix_time(end))
     print('start:' + str(c.readable_time(ustart)) +
