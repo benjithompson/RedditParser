@@ -55,13 +55,15 @@ def get_comments(posts, submission_cnt=None, comment_cnt=None):
             for post in posts:
                 title = str(post.title)
                 data.append(title)
-                print(title)
                 print(c.readable_time(get_submission_time(post)))
+                print(title)
+                post.comments.replace_more(limit=0)
                 for comment in post.comments.list():
                     comment = str(comment.body)
                     data.append(comment)
                     print('.', end='')
                     sys.stdout.flush()
+                print()
             break
 
         except ex.HTTPError as err:

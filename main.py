@@ -22,13 +22,13 @@ def main():
     rd.run_analysis()
     rd.printall()
 
-    ans = input('Do you want to save file? (y/n):')
+    ans = input('Do you want to save file? (y/n): ')
     if ans is 'y':
-        filename = input('save to file: ')
+        filename = input('filename: ')
         cntpath = c.get_path(filename, '/data/', '.cnt')
         rawpath = c.get_path(filename, '/data/', '.raw')
         io.save_data_to_file(rd.wordskv, cntpath)
-        io.save_data_to_file(rd.rawtextstr, rawpath)
+        io.save_data_to_file(rd.analysis_text, rawpath)
     else:
         pprint('exitting...')
 
