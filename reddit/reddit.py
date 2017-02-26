@@ -53,14 +53,12 @@ def get_comments(posts, submission_cnt=None, comment_cnt=None):
     while True:
         try:
             for post in posts:
-
-                #get post data [title, date, ...]
-                title = str(post.title.encode('ascii', 'ignore'))
+                title = str(post.title)
+                data.append(title)
                 print(title)
                 print(c.readable_time(get_submission_time(post)))
-                #post.comments.replace_more(limit=0)
                 for comment in post.comments.list():
-                    comment = str(comment.body.encode('ascii', 'ignore'))
+                    comment = str(comment.body)
                     data.append(comment)
                     print('.', end='')
                     sys.stdout.flush()
@@ -82,8 +80,8 @@ def get_comments(posts, submission_cnt=None, comment_cnt=None):
         except:
             print('Exception:' + sys.exc_info()[0])
             sleep(WAIT)
-
-    return data
+        finally:
+            return data
 
 def get_submission_time(submission):
     return submission.created_utc
