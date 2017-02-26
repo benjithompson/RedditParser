@@ -43,3 +43,10 @@ def __write_data(data, filename):
         sys.stdout.flush()
         p.pprint(data, f)
         f.flush()
+
+def read_from_file(filename):
+    text = ''
+    with open(filename, 'r') as f:
+        for line in f.readline():
+            text += line
+    return text

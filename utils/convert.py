@@ -23,8 +23,12 @@ def list_to_str(wlist):
         data += str(entry)
     return data
 
+def ana_text(text):
+    """Removes numbers and extra spaces, toLower()"""
+    return re.sub('[^a-zA-Z.,\']', ' ', text).lower()
+    #return ' '.join(re.sub(r'\b\w{1,2}\b', '', cleantext).split())
+
 def clean_text(text):
-    """Removes symboles, numbers and extra spaces, toLower()"""
     cleantext = re.sub('[^a-zA-Z]', ' ', text).lower()
     return ' '.join(re.sub(r'\b\w{1,2}\b', '', cleantext).split())
 
