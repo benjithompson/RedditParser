@@ -1,5 +1,6 @@
 """Analysis functions using textstat module"""
 
+from collections import defaultdict
 from pprint import pprint
 
 from textstat import textstat as ts
@@ -9,51 +10,27 @@ from utils import convert as c
 
 
 class RedditData:
-    """
-    * 90-100 : Very Easy
-    * 80-89 : Easy
-    * 70-79 : Fairly Easy
-    * 60-69 : Standard
-    * 50-59 : Fairly Difficult
-    * 30-49 : Difficult
-    * 0-29 : Very Confusing
-    """
 
-    REDDIT = None
-    sub = ''
-    posts = None
-    starttime = 0
-    endtime = 0
+    __reddit = reddit.get_reddit()
 
-    commlist = []
-    rawtextstr = ''
-    analysis_text = ''
-    wordskv = {}
+    def __init__(self):
 
-    fleschease = 0
-    fleschgrade = 0
-    dalechall = 0
-    ari = 0
-    colemanliau = 0
-    lisear = 0
-
-    smog = 0
-    difcwords = 0
-    sentences = 0
-    lexiconcnt = 0
-    avgsyllables = 0
-
-    stdreadability = 0
-
-    def __init__(self, REDDIT):
-        self.REDDIT = REDDIT
+        self.sub = ''
+        self.starttime = 0
+        self.endtime = 0
+        self.posts = None
+        self.commlist = []
+        self.rawtextstr = ''
+        self.analysis_text = ''
+        self.wordskv = {}
+        self.stats = defaultdict(list)
 
     def start_query(self, sub, starttime, endtime):
         """begins retrieving reddit comments"""
         self.sub = sub
         self.starttime = starttime
         self.endtime = endtime
-        self.posts = reddit.get_posts(self.REDDIT, self.sub, self.endtime, self.starttime)
+        self.posts = reddit.get_posts(self.__reddit, sub, endtime, starttime)
         self.commlist = reddit.get_comments(self.posts)
 
     def run_analysis(self):
@@ -67,48 +44,34 @@ class RedditData:
         worddict = self.__getdict(c.clean_text(self.rawtextstr))
         self.wordskv = self.__getsortedkv(worddict)
 
-        self.fleschease = ts.textstat.flesch_reading_ease(self.analysis_text)
-        self.fleschgrade = ts.textstat.flesch_kincaid_grade(self.analysis_text)
-        self.dalechall = ts.textstat.dale_chall_readability_score(self.analysis_text)
-        self.ari = ts.textstat.automated_readability_index(self.analysis_text)
-        self.colemanliau = ts.textstat.coleman_liau_index(self.analysis_text)
-        self.lisear = ts.textstat.linsear_write_formula(self.analysis_text)
+        self.stats['flesch_ease'].append(ts.textstat.flesch_reading_ease(self.analysis_text))
+        self.stats['flesch_grade'].append(ts.textstat.flesch_kincaid_grade(self.analysis_text))
+        self.stats['dalechall'].append(ts.textstat.dale_chall_readability_score(self.analysis_text))
+        self.stats['ari'].append(ts.textstat.automated_readability_index(self.analysis_text))
+        self.stats['colemanliau'].append(ts.textstat.coleman_liau_index(self.analysis_text))
+        self.stats['lisear'].append(ts.textstat.linsear_write_formula(self.analysis_text))
 
-        self.smog = ts.textstat.smog_index(self.analysis_text)
-        self.difcwords = ts.textstat.difficult_words(self.analysis_text)
-        self.sentences = ts.textstat.sentence_count(self.rawtextstr)
-        self.lexiconcnt = ts.textstat.lexicon_count(self.rawtextstr)
-        self.avgsyllables = ts.textstat.avg_syllables_per_word(self.analysis_text)
+        self.stats['smog'].append(ts.textstat.smog_index(self.analysis_text))
+        self.stats['difcwords'].append(ts.textstat.difficult_words(self.analysis_text))
+        self.stats['sentences'].append(ts.textstat.sentence_count(self.rawtextstr))
+        self.stats['lexiconcnt'].append(ts.textstat.lexicon_count(self.rawtextstr))
+        self.stats['avgsyllables'].append(ts.textstat.avg_syllables_per_word(self.analysis_text))
 
-        self.stdreadability = ts.textstat.text_standard(self.analysis_text)
+        self.stats['stdreadability'].append(ts.textstat.text_standard(self.analysis_text))
 
     def printall(self):
-        """Prints class attributes"""
+        """Prints current class attributes"""
         print('\nSUB: ' + self.sub +
               '\nSTART: ' + str(c.readable_time(self.starttime)) +
               ', END: ' + str(c.readable_time(self.endtime)))
 
-        pprint('Flesch Reading EASE:    ' + str(self.fleschease))
-        pprint('Flesch GRADE:           ' + str(self.fleschgrade))
-        pprint('Dale Chall Readability: ' + str(self.dalechall))
-        pprint('Avg Readability Idx:    ' + str(self.ari))
-        pprint('Coleman Liau Idx:       ' + str(self.colemanliau))
-        pprint('Lisear Formula:         ' + str(self.lisear))
-        pprint('Smog Idx:               ' + str(self.smog))
-        pprint('Difficult Words:        ' + str(self.difcwords))
-        pprint('Sentences:              ' + str(self.sentences))
-        pprint('Lexicon Count:          ' + str(self.lexiconcnt))
-        pprint('Avg Syllables Per Word: ' + str(self.avgsyllables))
-        pprint('ReadabilityConcensus:   ' + str(self.stdreadability))
+        pprint(self.stats)
 
     def __getdict(self, text):
-        wordcount = {}
+        wordcount = defaultdict(int)
         words = text.split()
         for word in words:
-            if word in wordcount:
-                wordcount[word] += 1
-            else:
-                wordcount[word] = 1
+            wordcount[word] += 1
         return wordcount
 
     def __getsortedkv(self, worddict):
